@@ -99,7 +99,7 @@ export default function CreateRoom() {
             className="form-control"
             value={playerName}
             onChange={handleOnChange}
-            style={{ marginLeft: "0.5rem" }}
+            style={{ marginLeft: "0.3rem", width: "95%" }}
             minLength={3}
             maxLength={10}
             required
