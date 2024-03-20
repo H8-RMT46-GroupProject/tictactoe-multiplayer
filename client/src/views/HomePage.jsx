@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg"
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -11,9 +12,11 @@ export default function HomePage() {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
+          backgroundImage: `url(${Image})`,
+          backgroundSize: "cover",
         }}
       >
-        <h1 style={{ marginBottom: "100px" }}>Welcome to the Tic-Tac-Toe Game</h1>
+        <h1 style={{ color: "white", marginBottom: "50px" }}>Welcome to the Tic-Tac-Toe Game</h1>
         <div style={{ display: "flex" }}>
           <button
             className="btn btn-lg btn-primary"
