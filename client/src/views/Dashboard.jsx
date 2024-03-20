@@ -8,6 +8,8 @@ import { calculateWinner, calculatedraw } from "../helpers/helper";
 import { useNavigate } from "react-router-dom";
 import clickSoundAsset from "../sounds/click.wav";
 import gameOverSoundAsset from "../sounds/game_over.wav";
+import '../styles/style.css';
+import Image from "../images/rm218-bb-07.jpg"
 
 export default function Dashboard() {
   const [xIsNext, setXIsNext] = useState(true);
@@ -176,6 +178,9 @@ export default function Dashboard() {
         style={{
           position: "relative",
           height: "100vh",
+          backgroundImage: `url(${Image})`,
+          backgroundSize: "cover",
+          color: "white"
         }}
       >
         <button
@@ -219,61 +224,32 @@ export default function Dashboard() {
               </p>
             </div>
             {data && Object.keys(data).length > 0 && (
-              <div>
-                <div>
-                  <Square
-                    value={squares[0]}
-                    onSquareClick={() => handleClick(0)}
-                  />
-                  <Square
-                    value={squares[1]}
-                    onSquareClick={() => handleClick(1)}
-                  />
-                  <Square
-                    value={squares[2]}
-                    onSquareClick={() => handleClick(2)}
-                  />
-                </div>
-                <div>
-                  <Square
-                    value={squares[3]}
-                    onSquareClick={() => handleClick(3)}
-                  />
-                  <Square
-                    value={squares[4]}
-                    onSquareClick={() => handleClick(4)}
-                  />
-                  <Square
-                    value={squares[5]}
-                    onSquareClick={() => handleClick(5)}
-                  />
-                </div>
-                <div>
-                  <Square
-                    value={squares[6]}
-                    onSquareClick={() => handleClick(6)}
-                  />
-                  <Square
-                    value={squares[7]}
-                    onSquareClick={() => handleClick(7)}
-                  />
-                  <Square
-                    value={squares[8]}
-                    onSquareClick={() => handleClick(8)}
-                  />
-                </div>
+              <div className="border border-lg border-white shadow shadow-lg">
+                {[0, 1, 2].map((row) => (
+                  <div key={row}>
+                    {[0, 1, 2].map((col) => (
+                      <Square
+                        key={col}
+                        value={squares[row * 3 + col]}
+                        onSquareClick={() => handleClick(row * 3 + col)}
+                      />
+                    ))}
+                  </div>
+                ))}
               </div>
             )}
             <div>
-              <h5>Player 2: {player2?.name}</h5>
-              <p>
-                Win: {player2?.win} | Lose: {player2?.lose} | Draw:{" "}
-                {player2?.draw}
-              </p>
+              <h5>Player 2: {player2.name}</h5>
+              {player2.name === "Waiting..." ? (
+                <div className="spinner"></div>
+              ) : (
+                <p>
+                  Win: {player2.win} | Lose: {player2.lose} | Draw: {player2.draw}
+                </p>
+              )}
             </div>
           </div>
         </div>
-
         <div
           className="reset-button mt-5"
           style={{
