@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { UserContext } from "../UserContext";
 import toast from "../utils/toast"
+import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg"
 
 export default function CreateRoom() {
   const [playerName, setPlayerName] = useState("");
@@ -68,22 +69,29 @@ export default function CreateRoom() {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
+          backgroundImage: `url(${Image})`,
+          backgroundSize: "cover",
         }}
       >
         <form onSubmit={handleCreate} style={{ textAlign: "center" }}>
-          <label htmlFor="playerName">Player Name:</label>
+          <label htmlFor="playerName" className="form-label" style={{color: "white"}}>Player Name:</label>
           <input
             type="text"
             id="playerName"
+            className="form-control"
             value={playerName}
             onChange={handleOnChange}
             style={{ marginLeft: "0.5rem" }}
           /> <br /><br />
-          <button className="btn btn-primary" style={{ marginLeft: "0.5rem" }} type="submit">Create Room</button>
+          <div className="d-flex justify-content-center">
+            <button className="btn btn-primary me-2" type="submit">
+              Create Room
+            </button>
+            <Link to="/">
+              <button className="btn btn-danger ms-2">Cancel</button>
+            </Link>
+          </div>
         </form> <br />
-        <Link to="/">
-          <button className="btn btn-danger">Cancel</button>
-        </Link>
       </div>
     </>
   );
