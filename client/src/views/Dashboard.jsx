@@ -3,8 +3,8 @@ import Square from "../components/Square";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../helpers/firebaseConfig.js";
 import { getDatabase, onValue, ref, update } from "firebase/database";
-import { UserContext } from "../UserContext";
-import { calculateWinner } from "../helpers/helper";
+import { UserContext } from "../contexts/UserContext.js";
+import { calculateWinner, calculatedraw } from "../helpers/helper";
 import { useNavigate } from "react-router-dom";
 import clickSoundAsset from "../sounds/click.wav";
 import gameOverSoundAsset from "../sounds/game_over.wav";
@@ -13,6 +13,8 @@ export default function Dashboard() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [status, setStatus] = useState("");
+
+  const { user, setUser } = useContext(UserContext);
   const [data, setData] = useState({});
 
   const [player1, setPlayer1] = useState({
@@ -25,15 +27,13 @@ export default function Dashboard() {
   });
 
   const [player2, setPlayer2] = useState({
-    turn: "X",
+    turn: "O",
     win: 0,
     lose: 0,
     draw: 0,
     role: "player2",
-    name: "",
+    name: "Waiting...",
   });
-
-  const { user, setUser } = useContext(UserContext);
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
@@ -44,7 +44,12 @@ export default function Dashboard() {
   const gameOverSound = new Audio(gameOverSoundAsset);
 
   const handleClick = (i) => {
-    if (squares[i] || calculateWinner(squares)) {
+    if (
+      squares[i] ||
+      calculateWinner(squares) ||
+      (user.turn === "X" && !xIsNext) ||
+      (user.turn === "O" && xIsNext)
+    ) {
       return;
     }
 
@@ -69,24 +74,44 @@ export default function Dashboard() {
     if (winner) {
       const winningPlayer = winner === "X" ? "Player 1 (X)" : "Player 2 (O)";
       setStatus("Winner: " + winningPlayer);
-      gameOverSound.play();
-    } else {
-      if (Object.keys(squares).length === 1) {
-        setStatus("Player 1 Start");
-      } else {
-        const currentPlayer = xIsNext ? "Player 1 (X)" : "Player 2 (O)";
-        setStatus("Next Player: " + currentPlayer);
+
+      if (winner === "X") {
+        update(ref(db, `rooms/${user.room}/player1`), {
+          win: data.player1.win + 1,
+        });
+        update(ref(db, `rooms/${user.room}/player2`), {
+          lose: data.player2.lose + 1,
+        });
+      } else if (winner === "O") {
+        update(ref(db, `rooms/${user.room}/player2`), {
+          win: data.player2.win + 1,
+        });
+        update(ref(db, `rooms/${user.room}/player1`), {
+          lose: data.player1.lose + 1,
+        });
       }
+      gameOverSound.play();
+    } else if (Object.keys(squares).length === 1) {
+      setStatus("Player 1 Start");
+    } else if (calculatedraw(squares)) {
+      update(ref(db, `rooms/${user.room}/player2`), {
+        draw: data.player1.draw + 1,
+      });
+      update(ref(db, `rooms/${user.room}/player1`), {
+        draw: data.player2.draw + 1,
+      });
+      setStatus("Draw");
+    } else {
+      const currentPlayer = xIsNext ? "Player 1 (X)" : "Player 2 (O)";
+      setStatus("Next Player: " + currentPlayer);
     }
-  }, [xIsNext, squares]);
+  }, [xIsNext]);
 
   useEffect(() => {
     const userLocal = JSON.parse(localStorage.getItem("user"));
     if (!userLocal) navigate("/");
 
     setUser(userLocal);
-    console.log(userLocal);
-
     const starCountRef = ref(db, `rooms/${userLocal.room}`);
     onValue(starCountRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -95,7 +120,9 @@ export default function Dashboard() {
         setSquares(data.squares);
 
         setPlayer1(data.player1);
-        setPlayer2(data.player2);
+        if (data.player2) setPlayer2(data.player2);
+
+        setXIsNext(data.xIsNext);
       }
     });
 
@@ -107,17 +134,25 @@ export default function Dashboard() {
       setXIsNext(randomFirstPlayer);
     }
   }, []);
+
   // console.log(data);
-  // console.log(data.squares);
-  // console.log(player1);
-  // console.log(player2);
 
   const handleReset = () => {
-    // Reset game state here
     setSquares(Array(9).fill(null));
     setStatus("");
     setXIsNext(true);
+
+    const updateStatus = {
+      xIsNext: true,
+      squares: {
+        9: 10,
+      },
+    };
+    update(ref(db, `rooms/${user.room}`), updateStatus);
   };
+  // console.log(data.squares);
+  // console.log(player1);
+  // console.log(player2);
 
   return (
     <>
@@ -166,78 +201,94 @@ export default function Dashboard() {
             height: "100vh",
           }}
         >
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: "10px" }}>
             <h1>Multiplayer Tic-Tac-Toe Game</h1>
           </div>
-          <div className="status" style={{ marginTop: "20px" }}>
+          <div>
+            <h4>Room: {user.room}</h4>
+          </div>
+          <div className="status">
             <h5>{status}</h5>
           </div>
-          {data && Object.keys(data).length > 0 && (
-            <>
+          <div className="container d-flex justify-content-center align-items-center gap-5">
+            <div>
+              <h5>Player 1: {player1?.name}</h5>
+              <p>
+                Win: {player1?.win} | Lose: {player1?.lose} | Draw:{" "}
+                {player1?.draw}
+              </p>
+            </div>
+            {data && Object.keys(data).length > 0 && (
               <div>
-                <Square
-                  value={squares[0]}
-                  onSquareClick={() => handleClick(0)}
-                  // disabled={
-                  //   (data[user.name].turn === "X" && !xIsNext) ||
-                  //   (data[user.name].turn === "Y" && xIsNext) ||
-                  //   (data[user.name].turn !== "X" && data[user.name].turn !== "Y")
-                  // }
-                />
-                <Square
-                  value={squares[1]}
-                  onSquareClick={() => handleClick(1)}
-                />
-                <Square
-                  value={squares[2]}
-                  onSquareClick={() => handleClick(2)}
-                />
+                <div>
+                  <Square
+                    value={squares[0]}
+                    onSquareClick={() => handleClick(0)}
+                  />
+                  <Square
+                    value={squares[1]}
+                    onSquareClick={() => handleClick(1)}
+                  />
+                  <Square
+                    value={squares[2]}
+                    onSquareClick={() => handleClick(2)}
+                  />
+                </div>
+                <div>
+                  <Square
+                    value={squares[3]}
+                    onSquareClick={() => handleClick(3)}
+                  />
+                  <Square
+                    value={squares[4]}
+                    onSquareClick={() => handleClick(4)}
+                  />
+                  <Square
+                    value={squares[5]}
+                    onSquareClick={() => handleClick(5)}
+                  />
+                </div>
+                <div>
+                  <Square
+                    value={squares[6]}
+                    onSquareClick={() => handleClick(6)}
+                  />
+                  <Square
+                    value={squares[7]}
+                    onSquareClick={() => handleClick(7)}
+                  />
+                  <Square
+                    value={squares[8]}
+                    onSquareClick={() => handleClick(8)}
+                  />
+                </div>
               </div>
-              <div>
-                <Square
-                  value={squares[3]}
-                  onSquareClick={() => handleClick(3)}
-                />
-                <Square
-                  value={squares[4]}
-                  onSquareClick={() => handleClick(4)}
-                />
-                <Square
-                  value={squares[5]}
-                  onSquareClick={() => handleClick(5)}
-                />
-              </div>
-              <div>
-                <Square
-                  value={squares[6]}
-                  onSquareClick={() => handleClick(6)}
-                />
-                <Square
-                  value={squares[7]}
-                  onSquareClick={() => handleClick(7)}
-                />
-                <Square
-                  value={squares[8]}
-                  onSquareClick={() => handleClick(8)}
-                />
-              </div>
-            </>
-          )}
+            )}
+            <div>
+              <h5>Player 2: {player2?.name}</h5>
+              <p>
+                Win: {player2?.win} | Lose: {player2?.lose} | Draw:{" "}
+                {player2?.draw}
+              </p>
+            </div>
+          </div>
         </div>
+
         <div
-        className="reset-button"
-        style={{
-          position: "absolute",
-          bottom: "2px",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <button className="btn btn-lg btn-warning" onClick={handleReset}>
-          Reset Game
-        </button>
+          className="reset-button mt-5"
+          style={{
+            position: "absolute",
+            bottom: "2px",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <button className="btn btn-lg btn-warning" onClick={handleReset}>
+            Reset Game
+          </button>
+        </div>
       </div>
-      </div>
+
       {/* <button className="btn btn-lg btn-primary" onClick={handlePlayAgain}>
         Play Again
       </button> */}

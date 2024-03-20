@@ -3,7 +3,7 @@ import { get, getDatabase, ref, update } from "firebase/database";
 import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { firebaseConfig } from "../helpers/firebaseConfig";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import toast from "../utils/toast";
 import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg"
 
@@ -62,10 +62,11 @@ export default function JoinRoom() {
         setUser({
           name: playerName,
           room: room,
+          turn: "O",
         });
         localStorage.setItem(
           "user",
-          JSON.stringify({ name: playerName, room })
+          JSON.stringify({ name: playerName, room, turn: "O" })
         );
         toast({
           message: `${playerName} has joined room ${room}`,
@@ -92,7 +93,13 @@ export default function JoinRoom() {
         }}
       >
         <form onSubmit={handleJoin} style={{ textAlign: "center" }}>
-          <label htmlFor="playerName" className="form-label" style={{color: "white"}}>Player Name:</label>
+          <label
+            htmlFor="playerName"
+            className="form-label"
+            style={{ color: "white" }}
+          >
+            Player Name:
+          </label>
           <input
             type="text"
             id="playerName"
@@ -100,10 +107,19 @@ export default function JoinRoom() {
             value={playerName}
             onChange={handleOnChange}
             style={{ marginLeft: "0.5rem" }}
+            minLength={3}
+            maxLength={10}
+            required
           />{" "}
           <br />
           <br />
-          <label htmlFor="room" className="form-label" style={{color: "white"}}>Room Code:</label>
+          <label
+            htmlFor="room"
+            className="form-label"
+            style={{ color: "white" }}
+          >
+            Room Code:
+          </label>
           <input
             type="text"
             id="room"
@@ -111,6 +127,9 @@ export default function JoinRoom() {
             value={room}
             onChange={handleOnChange}
             style={{ marginLeft: "0.5rem" }}
+            minLength={3}
+            maxLength={10}
+            required
           />{" "}
           <br />
           <br />

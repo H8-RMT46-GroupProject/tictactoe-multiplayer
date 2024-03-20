@@ -1,12 +1,13 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routers";
 import { useState } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./contexts/UserContext";
 
 function App() {
   const [user, setUser] = useState({
     name: "",
     room: "",
+    turn: "",
   });
 
   return (

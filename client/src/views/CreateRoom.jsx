@@ -3,9 +3,9 @@ import { firebaseConfig } from "../helpers/firebaseConfig.js";
 import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { initializeApp } from "firebase/app";
-import { UserContext } from "../UserContext";
-import toast from "../utils/toast"
-import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg"
+import { UserContext } from "../contexts/UserContext";
+import toast from "../utils/toast";
+import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg";
 
 export default function CreateRoom() {
   const [playerName, setPlayerName] = useState("");
@@ -30,7 +30,7 @@ export default function CreateRoom() {
       trimmedPlayerName = trimmedPlayerName.substring(0, 10);
     }
     try {
-      const room = Math.floor(Math.random() * 10000);
+      const room = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
 
     const createRoom = {
       [room]: {
@@ -50,17 +50,34 @@ export default function CreateRoom() {
       },
     };
 
+      update(ref(db, "rooms"), createRoom);
+
+      setUser({
+        name: playerName,
+        room: room,
+        turn: "X",
+      });
     update(ref(db, "rooms"), createRoom);
     setUser({
       name: trimmedPlayerName,
       room: room,
     });
 
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ name: playerName, room, turn: "X" })
+      );
+
+      toast({
+        message: `${playerName} Room created`,
+        backgroundColor: "green",
+      });
+      navigate("/dashboard");
     localStorage.setItem("user", JSON.stringify({ name: trimmedPlayerName, room }));
     toast({ message: `${trimmedPlayerName} Room created`, backgroundColor: "green" })
     navigate("/dashboard");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -78,7 +95,13 @@ export default function CreateRoom() {
         }}
       >
         <form onSubmit={handleCreate} style={{ textAlign: "center" }}>
-          <label htmlFor="playerName" className="form-label" style={{color: "white"}}>Player Name:</label>
+          <label
+            htmlFor="playerName"
+            className="form-label"
+            style={{ color: "white" }}
+          >
+            Player Name:
+          </label>
           <input
             type="text"
             id="playerName"
@@ -86,7 +109,12 @@ export default function CreateRoom() {
             value={playerName}
             onChange={handleOnChange}
             style={{ marginLeft: "0.5rem" }}
-          /> <br /><br />
+            minLength={3}
+            maxLength={10}
+            required
+          />{" "}
+          <br />
+          <br />
           <div className="d-flex justify-content-center">
             <button className="btn btn-primary me-2" type="submit">
               Create Room
@@ -95,7 +123,8 @@ export default function CreateRoom() {
               <button className="btn btn-danger ms-2">Cancel</button>
             </Link>
           </div>
-        </form> <br />
+        </form>{" "}
+        <br />
       </div>
     </>
   );
