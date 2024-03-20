@@ -85,3 +85,11 @@ export const calculateWinner = (squares) => {
     }
     return null;
 };
+
+export const calculatedraw = (squares) => {
+    if (Object.keys(squares).length < 9) return false
+    for (let i = 0; i < 9; i++) {
+        if (squares[i] === null) return false
+    }
+    return true
+}

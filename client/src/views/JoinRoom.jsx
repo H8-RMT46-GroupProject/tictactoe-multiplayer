@@ -3,7 +3,7 @@ import { get, getDatabase, ref, update } from "firebase/database";
 import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { firebaseConfig } from "../helpers/firebaseConfig";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import toast from "../utils/toast";
 
 export default function JoinRoom() {
@@ -61,10 +61,11 @@ export default function JoinRoom() {
         setUser({
           name: playerName,
           room: room,
+          turn: "O",
         });
         localStorage.setItem(
           "user",
-          JSON.stringify({ name: playerName, room })
+          JSON.stringify({ name: playerName, room, turn: "O" })
         );
         toast({
           message: `${playerName} has joined room ${room}`,
