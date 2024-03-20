@@ -112,13 +112,6 @@ export default function Dashboard() {
   // console.log(player1);
   // console.log(player2);
 
-  const handleReset = () => {
-    setSquares(Array(9).fill(null));
-    setStatus("");
-    setXIsNext(true);
-    localStorage.removeItem("gameState");
-  };
-
   return (
     <>
       {/* <div>
@@ -223,19 +216,6 @@ export default function Dashboard() {
           <div className="status" style={{ marginTop: "20px" }}>
             <h5>{status}</h5>
           </div>
-          <div
-        className="reset-button"
-        style={{
-          position: "absolute",
-          bottom: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <button className="btn btn-lg btn-warning" onClick={handleReset}>
-          Reset Game
-        </button>
-      </div>
         </div>
       </div>
       {/* <button className="btn btn-lg btn-primary" onClick={handlePlayAgain}>
