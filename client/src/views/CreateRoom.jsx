@@ -1,9 +1,10 @@
 import { getDatabase, ref, update } from "firebase/database";
 import { firebaseConfig } from "../helpers/firebaseConfig.js";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { UserContext } from "../UserContext";
+import toast from "../utils/toast"
 
 export default function CreateRoom() {
   const [playerName, setPlayerName] = useState("");
@@ -19,7 +20,12 @@ export default function CreateRoom() {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    const room = Math.floor(Math.random() * 10000);
+    if (!playerName.trim()) {
+      toast({ message: "Player name is required", backgroundColor: "red" });
+      return;
+    }
+    try {
+      const room = Math.floor(Math.random() * 10000);
 
     const createRoom = {
       [room]: {
@@ -53,20 +59,39 @@ export default function CreateRoom() {
     });
 
     localStorage.setItem("user", JSON.stringify({ name: playerName, room }));
+    toast({ message: `${playerName} Room created`, backgroundColor: "green" })
     navigate("/dashboard");
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
     <>
-      <form onSubmit={handleCreate}>
-        <input
-          type="text"
-          id="playerName"
-          value={playerName}
-          onChange={handleOnChange}
-        />
-        <button type="submit">Submit</button>
-      </form>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <form onSubmit={handleCreate} style={{ textAlign: "center" }}>
+          <label htmlFor="playerName">Player Name:</label>
+          <input
+            type="text"
+            id="playerName"
+            value={playerName}
+            onChange={handleOnChange}
+            style={{ marginLeft: "0.5rem" }}
+          /> <br /><br />
+          <button className="btn btn-primary" style={{ marginLeft: "0.5rem" }} type="submit">Create Room</button>
+        </form> <br />
+        <Link to="/">
+          <button className="btn btn-danger">Cancel</button>
+        </Link>
+      </div>
     </>
   );
 }
