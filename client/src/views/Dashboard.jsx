@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import Square from "../components/Square";
 import { calculateWinner } from "../helpers/helper";
+import clickSoundAsset from "../sounds/click.wav";
+import gameOverSoundAsset from "../sounds/game_over.wav";
 
 export default function Dashboard() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [status, setStatus] = useState("");
+
+  const clickSound = new Audio(clickSoundAsset);
+  const gameOverSound = new Audio(gameOverSoundAsset);
 
   const handleClick = (i) => {
     if (squares[i] || calculateWinner(squares)) {
@@ -19,19 +24,37 @@ export default function Dashboard() {
     }
     setSquares(nextSquares);
     setXIsNext(!xIsNext);
+    clickSound.play();
   };
 
   useEffect(() => {
     const winner = calculateWinner(squares);
-    winner
-      ? setStatus("Pemenang: " + winner)
-      : setStatus("Pemain selanjutnya: " + (xIsNext ? "X" : "O"));
+    if (winner) {
+      const winningPlayer = xIsNext ? "Player 1 (X)" : "Player 2 (O)";
+      setStatus("Winner: " + winningPlayer);
+      gameOverSound.play();
+    } else {
+      if (squares.every(square => square === null)) {
+        setStatus("Player 1 Start");
+      } else {
+        const currentPlayer = xIsNext ? "X" : "O";
+        setStatus("Next Player: " + currentPlayer);
+      }
+    }
   }, [xIsNext, squares]);
 
   return (
     <>
-      <div className="status">{status}</div>
-      <div className="d-flex flex-column justify-content-center align-items-center h-100">
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}>
+        <div style={{marginBottom: "20px"}}>
+          <h1>Multiplayer Tic-Tac-Toe Game</h1>
+        </div>
         <div>
           <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
           <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -47,6 +70,7 @@ export default function Dashboard() {
           <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
           <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
         </div>
+        <div className="status" style={{marginTop: "20px"}}><h5>{status}</h5></div>
       </div>
     </>
   );
