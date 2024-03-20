@@ -189,6 +189,7 @@ export default function Dashboard() {
             position: "absolute",
             top: "10px",
             right: "10px",
+            margin: "2%"
           }}
           onClick={() => {
             localStorage.clear();
@@ -224,7 +225,7 @@ export default function Dashboard() {
               </p>
             </div>
             {data && Object.keys(data).length > 0 && (
-              <div className="border border-lg border-white shadow shadow-lg">
+              <div className="border border-lg border-white shadow shadow-lg" style={{marginTop: '1.5%'}}>
                 {[0, 1, 2].map((row) => (
                   <div key={row}>
                     {[0, 1, 2].map((col) => (
@@ -259,7 +260,7 @@ export default function Dashboard() {
             transform: "translateX(-50%)",
           }}
         >
-          <button className="btn btn-lg btn-warning" onClick={handleReset}>
+          <button className="btn btn-lg btn-warning mb-4" onClick={handleReset}>
             Reset Game
           </button>
         </div>
