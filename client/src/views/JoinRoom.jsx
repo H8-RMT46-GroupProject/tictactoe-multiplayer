@@ -45,14 +45,20 @@ export default function JoinRoom() {
           },
         };
 
-        if (Object.keys(snapshot.val()).length > 3)
+        if (Object.keys(snapshot.val()).length > 3) {
           createPlayer[playerName].role = "penonton";
+          createPlayer[playerName].turn = "Z";
+        }
 
         update(ref(db, `rooms/${room}`), createPlayer);
         setUser({
           name: playerName,
           room: room,
         });
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ name: playerName, room })
+        );
         navigate("/dashboard");
       } else {
         alert("Room not found");

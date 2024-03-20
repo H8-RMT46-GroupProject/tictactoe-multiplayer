@@ -51,6 +51,8 @@ export default function CreateRoom() {
       name: playerName,
       room: room,
     });
+
+    localStorage.setItem("user", JSON.stringify({ name: playerName, room }));
     navigate("/dashboard");
   };
 
