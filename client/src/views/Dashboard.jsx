@@ -108,29 +108,15 @@ export default function Dashboard() {
     }
   }, []);
   // console.log(data);
-  // console.log(data.squares);
-  // console.log(player1);
-  // console.log(player2);
+
+  const handleReset = () => {
+    setSquares(Array(9).fill(null));
+    setStatus("");
+    setXIsNext(true);
+  };
 
   return (
     <>
-      <div className="status">{status}</div>
-      {/* <div>
-        <h4>Player 1: {player1.name}</h4>
-        <p>
-          Win: {player1.win} | Lose: {player1.lose} | Draw: {player1.draw}
-        </p>
-      </div>
-      <div>
-        <h4>Player 2: {player2.name}</h4>
-        <p>
-          Win: {player2.win} | Lose: {player2.lose} | Draw: {player2.draw}
-        </p>
-      </div>
-      <div>
-        <h4>Room: {data.room}</h4>
-      </div> */}
-
       <div
         style={{
           position: "relative",
@@ -138,7 +124,7 @@ export default function Dashboard() {
         }}
       >
         <button
-          className="btn btn-lg btn-primary"
+          className="btn btn-lg btn-danger"
           style={{
             position: "absolute",
             top: "10px",
@@ -162,6 +148,9 @@ export default function Dashboard() {
         >
           <div style={{ marginBottom: "20px" }}>
             <h1>Multiplayer Tic-Tac-Toe Game</h1>
+          </div>
+          <div className="status" style={{ marginTop: "20px" }}>
+            <h5>{status}</h5>
           </div>
           {data && Object.keys(data).length > 0 && (
             <>
@@ -214,23 +203,21 @@ export default function Dashboard() {
               </div>
             </>
           )}
-          <div className="status" style={{ marginTop: "20px" }}>
-            <h5>{status}</h5>
-          </div>
         </div>
-      </div>
-      <button
-        className="btn btn-lg btn-primary"
-        onClick={() => {
-          localStorage.clear();
-          navigate("/");
+        <div
+        className="reset-button"
+        style={{
+          position: "absolute",
+          bottom: "2px",
+          left: "50%",
+          transform: "translateX(-50%)",
         }}
       >
-        Logout
-      </button>
-      {/* <button className="btn btn-lg btn-primary" onClick={handlePlayAgain}>
-        Play Again
-      </button> */}
+        <button className="btn btn-lg btn-warning" onClick={handleReset}>
+          Reset Game
+        </button>
+      </div>
+      </div>
     </>
   );
 }
