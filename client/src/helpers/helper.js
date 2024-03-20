@@ -1,26 +1,3 @@
-export const deserialize = (arr) => {
-    let ans = [[], [], []]
-
-    arr.forEach((element, index) => {
-        let loc = Math.floor(index / 3)
-        ans[loc].push(element)
-    })
-
-    return ans
-}
-
-export const serialize = (arr) => {
-    let ans = []
-
-    arr.forEach(row => {
-        row.forEach(col => {
-            ans.push(col)
-        })
-    })
-
-    return ans
-}
-
 export const checkWinner = (arr, row, col) => {
     let symbol = arr[row][col]
     let size = arr.length
@@ -87,7 +64,7 @@ export const calculateWinner = (squares) => {
 };
 
 export const calculatedraw = (squares) => {
-    if (Object.keys(squares).length < 9) return false
+    if (Object.keys(squares).length <= 9) return false
     for (let i = 0; i < 9; i++) {
         if (squares[i] === null) return false
     }
