@@ -7,6 +7,7 @@ import { UserContext } from "../UserContext";
 import toast from "../utils/toast";
 import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg"
 
+
 export default function JoinRoom() {
   const [playerName, setPlayerName] = useState("");
   const [room, setRoom] = useState("");
@@ -122,7 +123,7 @@ export default function JoinRoom() {
               <button className="btn btn-danger ms-2">Cancel</button>
             </Link>
           </div>
-        </form>{" "}
+        </form>
       </div>
     </>
   );

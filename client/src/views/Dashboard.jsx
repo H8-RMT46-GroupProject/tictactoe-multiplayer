@@ -108,12 +108,8 @@ export default function Dashboard() {
     }
   }, []);
   // console.log(data);
-  // console.log(data.squares);
-  // console.log(player1);
-  // console.log(player2);
 
   const handleReset = () => {
-    // Reset game state here
     setSquares(Array(9).fill(null));
     setStatus("");
     setXIsNext(true);
@@ -121,22 +117,6 @@ export default function Dashboard() {
 
   return (
     <>
-      {/* <div>
-        <h4>Player 1: {player1.name}</h4>
-        <p>
-          Win: {player1.win} | Lose: {player1.lose} | Draw: {player1.draw}
-        </p>
-      </div>
-      <div>
-        <h4>Player 2: {player2.name}</h4>
-        <p>
-          Win: {player2.win} | Lose: {player2.lose} | Draw: {player2.draw}
-        </p>
-      </div>
-      <div>
-        <h4>Room: {data.room}</h4>
-      </div> */}
-
       <div
         style={{
           position: "relative",
@@ -238,9 +218,6 @@ export default function Dashboard() {
         </button>
       </div>
       </div>
-      {/* <button className="btn btn-lg btn-primary" onClick={handlePlayAgain}>
-        Play Again
-      </button> */}
     </>
   );
 }
