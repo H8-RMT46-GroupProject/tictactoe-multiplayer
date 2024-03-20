@@ -28,23 +28,24 @@ export default function CreateRoom() {
     try {
       const room = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
 
-    const createRoom = {
-      [room]: {
-        xIsNext: true,
-        player1: {
-          turn: "X",
-          winner: null,
-          win: 0,
-          lose: 0,
-          draw: 0,
-          role: "player1",
-          name: playerName,
+      const createRoom = {
+        [room]: {
+          xIsNext: true,
+          player1: {
+            turn: "X",
+            winner: null,
+            win: 0,
+            lose: 0,
+            draw: 0,
+            role: "player1",
+            name: playerName,
+          },
+          squares: {
+            10: 0,
+          },
         },
-        squares: {
-          10: 0,
-        },
-      },
-    };
+        isLogin: true,
+      };
 
       update(ref(db, "rooms"), createRoom);
 
@@ -64,9 +65,6 @@ export default function CreateRoom() {
         backgroundColor: "green",
       });
       navigate("/dashboard");
-    localStorage.setItem("user", JSON.stringify({ name: trimmedPlayerName, room }));
-    toast({ message: `${trimmedPlayerName} Room created`, backgroundColor: "green" })
-    navigate("/dashboard");
     } catch (error) {
       console.log(error);
     }

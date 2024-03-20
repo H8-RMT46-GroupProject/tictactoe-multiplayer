@@ -8,8 +8,8 @@ import { calculateWinner, calculatedraw } from "../helpers/helper";
 import { useNavigate } from "react-router-dom";
 import clickSoundAsset from "../sounds/click.wav";
 import gameOverSoundAsset from "../sounds/game_over.wav";
-import '../styles/style.css';
-import Image from "../images/rm218-bb-07.jpg"
+import "../styles/style.css";
+import Image from "../images/rm218-bb-07.jpg";
 
 export default function Dashboard() {
   const [xIsNext, setXIsNext] = useState(true);
@@ -94,8 +94,8 @@ export default function Dashboard() {
       }
       gameOverSound.play();
     } else if (Object.keys(squares).length === 1) {
-      setStatus("Player 1 Start");
-    } else if (calculatedraw(squares)) {
+      xIsNext ? setStatus("Player 1 Start") : setStatus("Player 2 Start");
+    } else if (calculatedraw(squares) && !winner) {
       update(ref(db, `rooms/${user.room}/player2`), {
         draw: data.player1.draw + 1,
       });
@@ -152,35 +152,28 @@ export default function Dashboard() {
     };
     update(ref(db, `rooms/${user.room}`), updateStatus);
   };
-  // console.log(data.squares);
-  // console.log(player1);
-  // console.log(player2);
 
+  const handleLogout = () => {
+    localStorage.clear();
+    update(ref(db, `rooms/${user.room}`), {
+      isLogin: false,
+    });
+    navigate("/");
+  };
+
+  if (data.isLogin === false) {
+    localStorage.clear();
+    navigate("/");
+  }
   return (
     <>
-      {/* <div>
-        <h4>Player 1: {player1.name}</h4>
-        <p>
-          Win: {player1.win} | Lose: {player1.lose} | Draw: {player1.draw}
-        </p>
-      </div>
-      <div>
-        <h4>Player 2: {player2.name}</h4>
-        <p>
-          Win: {player2.win} | Lose: {player2.lose} | Draw: {player2.draw}
-        </p>
-      </div>
-      <div>
-        <h4>Room: {data.room}</h4>
-      </div> */}
-
       <div
         style={{
           position: "relative",
           height: "100vh",
           backgroundImage: `url(${Image})`,
           backgroundSize: "cover",
-          color: "white"
+          color: "white",
         }}
       >
         <button
@@ -189,12 +182,9 @@ export default function Dashboard() {
             position: "absolute",
             top: "10px",
             right: "10px",
-            margin: "2%"
+            margin: "2%",
           }}
-          onClick={() => {
-            localStorage.clear();
-            navigate("/");
-          }}
+          onClick={handleLogout}
         >
           Logout
         </button>
@@ -225,7 +215,10 @@ export default function Dashboard() {
               </p>
             </div>
             {data && Object.keys(data).length > 0 && (
-              <div className="border border-lg border-white shadow shadow-lg" style={{marginTop: '1.5%'}}>
+              <div
+                className="border border-lg border-white shadow shadow-lg"
+                style={{ marginTop: "1.5%" }}
+              >
                 {[0, 1, 2].map((row) => (
                   <div key={row}>
                     {[0, 1, 2].map((col) => (
@@ -265,10 +258,6 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
-
-      {/* <button className="btn btn-lg btn-primary" onClick={handlePlayAgain}>
-        Play Again
-      </button> */}
     </>
   );
 }
