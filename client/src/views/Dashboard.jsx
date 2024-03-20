@@ -32,7 +32,7 @@ export default function Dashboard() {
     lose: 0,
     draw: 0,
     role: "player2",
-    name: "Waiting for player 2...",
+    name: "Waiting...",
   });
 
   const app = initializeApp(firebaseConfig);
@@ -193,7 +193,7 @@ export default function Dashboard() {
           </div>
           <div className="container d-flex justify-content-center align-items-center gap-5">
             <div>
-              <h4>Player 1: {player1?.name}</h4>
+              <h5>Player 1: {player1?.name}</h5>
               <p>
                 Win: {player1?.win} | Lose: {player1?.lose} | Draw:{" "}
                 {player1?.draw}
@@ -246,7 +246,7 @@ export default function Dashboard() {
               </div>
             )}
             <div>
-              <h4>Player 2: {player2?.name}</h4>
+              <h5>Player 2: {player2?.name}</h5>
               <p>
                 Win: {player2?.win} | Lose: {player2?.lose} | Draw:{" "}
                 {player2?.draw}
