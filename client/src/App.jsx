@@ -8,7 +8,6 @@ function App() {
     name: "",
     room: "",
   });
-  console.log(user);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
