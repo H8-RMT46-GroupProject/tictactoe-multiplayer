@@ -29,26 +29,22 @@ export default function JoinRoom() {
       if (snapshot.exists()) {
         const data = snapshot.val();
 
-        if (data[playerName]) {
-          alert("Player name already taken");
+        if (data.player2) {
+          alert("Player 2 already exists");
           return;
         }
 
         const createPlayer = {
-          [playerName]: {
+          player2: {
             turn: "O",
             winner: null,
             win: 0,
             lose: 0,
             draw: 0,
             role: "player2",
+            name: playerName,
           },
         };
-
-        if (Object.keys(snapshot.val()).length > 3) {
-          createPlayer[playerName].role = "penonton";
-          createPlayer[playerName].turn = "Z";
-        }
 
         update(ref(db, `rooms/${room}`), createPlayer);
         setUser({

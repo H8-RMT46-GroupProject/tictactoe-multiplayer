@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Square from "../components/Square";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../helpers/firebaseConfig.js";
-import { get, getDatabase, ref, update } from "firebase/database";
+import { getDatabase, onValue, ref, update } from "firebase/database";
 import { UserContext } from "../UserContext";
 import { calculateWinner } from "../helpers/helper";
 import { useNavigate } from "react-router-dom";
@@ -11,62 +11,80 @@ export default function Dashboard() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [status, setStatus] = useState("");
+  const [data, setData] = useState({});
+
+  const [player1, setPlayer1] = useState({
+    turn: "X",
+    win: 0,
+    lose: 0,
+    draw: 0,
+    role: "player1",
+    name: "",
+  });
+
+  const [player2, setPlayer2] = useState({
+    turn: "X",
+    win: 0,
+    lose: 0,
+    draw: 0,
+    role: "player2",
+    name: "",
+  });
+
+  const { user, setUser } = useContext(UserContext);
+
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  const { user, setUser } = useContext(UserContext);
-  const [data, setData] = useState({});
-  const navigate = useNavigate();
 
-  // const starCountRef = ref(db, `rooms/${user.room}`);
-  // onValue(starCountRef, (snapshot) => {
-  //   setData(snapshot.val());
-  //   console.log(snapshot.val());
-  //   console.log(data);
-  // });
+  const navigate = useNavigate();
 
   const handleClick = (i) => {
     if (squares[i] || calculateWinner(squares)) {
       return;
     }
-    const nextSquares = squares.slice();
-    if (xIsNext) {
-      nextSquares[i] = "X";
-    } else {
-      nextSquares[i] = "O";
-    }
-    setSquares(nextSquares);
+
+    xIsNext ? (squares[i] = "X") : (squares[i] = "O");
+    setSquares(squares);
     setXIsNext(!xIsNext);
+
     const updateStatus = {
       xIsNext: !xIsNext,
       squares: {
         ...squares,
-        [i]: nextSquares[i],
+        [i]: squares[i],
       },
     };
-    // console.log(squares);
-    console.log(updateStatus);
     update(ref(db, `rooms/${user.room}`), updateStatus);
   };
 
   useEffect(() => {
     const winner = calculateWinner(squares);
-    winner
-      ? setStatus("Pemenang: " + winner)
-      : setStatus("Pemain selanjutnya: " + (xIsNext ? "X" : "O"));
+    if (winner) {
+      setStatus("Pemenang: " + winner);
+    } else {
+      setStatus("Pemain selanjutnya: " + (xIsNext ? "X" : "O"));
+    }
   }, [xIsNext, squares]);
 
   useEffect(() => {
     const userLocal = JSON.parse(localStorage.getItem("user"));
-    console.log(userLocal);
-
-    if (!userLocal) {
-      navigate("/");
-    }
+    if (!userLocal) navigate("/");
 
     setUser(userLocal);
-    get(ref(db, `rooms/${userLocal.room}`)).then((snapshot) => {
+    console.log(userLocal);
+
+    const starCountRef = ref(db, `rooms/${userLocal.room}`);
+    onValue(starCountRef, (snapshot) => {
       if (snapshot.exists()) {
-        setData(snapshot.val());
+        const data = snapshot.val();
+        setData(data);
+        setSquares(data.squares);
+
+        setPlayer1(data.player1);
+        setPlayer2(data.player2);
+
+        console.log("Players:");
+        console.log(data.player1);
       }
     });
 
@@ -78,11 +96,26 @@ export default function Dashboard() {
       setXIsNext(randomFirstPlayer);
     }
   }, []);
+  console.log(data);
+  console.log(data.squares);
+  console.log(player1);
+  console.log(player2);
 
-  // console.log(data);
   return (
     <>
       <div className="status">{status}</div>
+      {/* <div>
+        <h4>Player 1: {player1.name}</h4>
+        <p>
+          Win: {player1.win} | Lose: {player1.lose} | Draw: {player1.draw}
+        </p>
+      </div>
+      <div>
+        <h4>Player 2: {player2.name}</h4>
+        <p>
+          Win: {player2.win} | Lose: {player2.lose} | Draw: {player2.draw}
+        </p>
+      </div> */}
       <div className="d-flex flex-column justify-content-center align-items-center h-100">
         {data && Object.keys(data).length > 0 && (
           <>
@@ -121,6 +154,9 @@ export default function Dashboard() {
       >
         Logout
       </button>
+      {/* <button className="btn btn-lg btn-primary" onClick={handlePlayAgain}>
+        Play Again
+      </button> */}
     </>
   );
 }
