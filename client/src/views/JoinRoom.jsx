@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { firebaseConfig } from "../helpers/firebaseConfig";
 import { UserContext } from "../contexts/UserContext";
 import toast from "../utils/toast";
-import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg";
+import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg"
 
 export default function JoinRoom() {
   const [playerName, setPlayerName] = useState("");

@@ -238,8 +238,7 @@ export default function Dashboard() {
                 <div className="spinner"></div>
               ) : (
                 <p>
-                  Win: {player2.win} | Lose: {player2.lose} | Draw:{" "}
-                  {player2.draw}
+                  Win: {player2.win} | Lose: {player2.lose} | Draw: {player2.draw}
                 </p>
               )}
             </div>
