@@ -4,7 +4,8 @@ import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { firebaseConfig } from "../helpers/firebaseConfig";
 import { UserContext } from "../UserContext";
-import toast from "../utils/toast"
+import toast from "../utils/toast";
+import Image from "../images/vecteezy_abstract-geometric-background-of-fluid-liquid-and-dynamic_23514200-1.jpg"
 
 export default function JoinRoom() {
   const [playerName, setPlayerName] = useState("");
@@ -37,27 +38,25 @@ export default function JoinRoom() {
     get(ref(db, `rooms/${room}`)).then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-
-        if (data[playerName]) {
-          toast({ message: "Player name already taken", backgroundColor: "red" });
+        if (data.player2) {
+          toast({
+            message: "Player name already taken",
+            backgroundColor: "red",
+          });
           return;
         }
 
         const createPlayer = {
-          [playerName]: {
+          player2: {
             turn: "O",
             winner: null,
             win: 0,
             lose: 0,
             draw: 0,
             role: "player2",
+            name: playerName,
           },
         };
-
-        if (Object.keys(snapshot.val()).length > 3) {
-          createPlayer[playerName].role = "penonton";
-          createPlayer[playerName].turn = "Z";
-        }
 
         update(ref(db, `rooms/${room}`), createPlayer);
         setUser({
@@ -68,7 +67,10 @@ export default function JoinRoom() {
           "user",
           JSON.stringify({ name: playerName, room })
         );
-        toast({ message: `${playerName} has joined room ${room}`, backgroundColor: "green" })
+        toast({
+          message: `${playerName} has joined room ${room}`,
+          backgroundColor: "green",
+        });
         navigate("/dashboard");
       } else {
         toast({ message: "Room not found", backgroundColor: "red" });
@@ -85,24 +87,42 @@ export default function JoinRoom() {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
+          backgroundImage: `url(${Image})`,
+          backgroundSize: "cover",
         }}
       >
         <form onSubmit={handleJoin} style={{ textAlign: "center" }}>
-          <label htmlFor="playerName">Player Name:</label>
+          <label htmlFor="playerName" className="form-label" style={{color: "white"}}>Player Name:</label>
           <input
             type="text"
             id="playerName"
+            className="form-control"
             value={playerName}
             onChange={handleOnChange}
             style={{ marginLeft: "0.5rem" }}
-          /> <br /><br />
-          <label htmlFor="room">Room Code:</label>
-          <input type="text" id="room" value={room} onChange={handleOnChange} style={{ marginLeft: "0.5rem" }} /> <br /><br />
-          <button class="btn btn-primary" type="submit">Join Room</button>
-        </form> <br />
-        <Link to="/">
-          <button class="btn btn-danger">Cancel</button>
-        </Link>
+          />{" "}
+          <br />
+          <br />
+          <label htmlFor="room" className="form-label" style={{color: "white"}}>Room Code:</label>
+          <input
+            type="text"
+            id="room"
+            className="form-control"
+            value={room}
+            onChange={handleOnChange}
+            style={{ marginLeft: "0.5rem" }}
+          />{" "}
+          <br />
+          <br />
+          <div className="d-flex justify-content-center">
+            <button className="btn btn-primary me-2" type="submit">
+              Join Room
+            </button>
+            <Link to="/">
+              <button className="btn btn-danger ms-2">Cancel</button>
+            </Link>
+          </div>
+        </form>{" "}
       </div>
     </>
   );
