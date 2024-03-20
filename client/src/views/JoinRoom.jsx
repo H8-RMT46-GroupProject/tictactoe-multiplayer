@@ -122,7 +122,7 @@ export default function JoinRoom() {
               <button className="btn btn-danger ms-2">Cancel</button>
             </Link>
           </div>
-        </form>{" "}
+        </form>
       </div>
     </>
   );

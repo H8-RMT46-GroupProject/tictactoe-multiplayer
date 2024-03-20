@@ -112,6 +112,13 @@ export default function Dashboard() {
   // console.log(player1);
   // console.log(player2);
 
+  const handleReset = () => {
+    // Reset game state here
+    setSquares(Array(9).fill(null));
+    setStatus("");
+    setXIsNext(true);
+  };
+
   return (
     <>
       {/* <div>
@@ -161,6 +168,9 @@ export default function Dashboard() {
         >
           <div style={{ marginBottom: "20px" }}>
             <h1>Multiplayer Tic-Tac-Toe Game</h1>
+          </div>
+          <div className="status" style={{ marginTop: "20px" }}>
+            <h5>{status}</h5>
           </div>
           {data && Object.keys(data).length > 0 && (
             <>
@@ -213,10 +223,20 @@ export default function Dashboard() {
               </div>
             </>
           )}
-          <div className="status" style={{ marginTop: "20px" }}>
-            <h5>{status}</h5>
-          </div>
         </div>
+        <div
+        className="reset-button"
+        style={{
+          position: "absolute",
+          bottom: "2px",
+          left: "50%",
+          transform: "translateX(-50%)",
+        }}
+      >
+        <button className="btn btn-lg btn-warning" onClick={handleReset}>
+          Reset Game
+        </button>
+      </div>
       </div>
       {/* <button className="btn btn-lg btn-primary" onClick={handlePlayAgain}>
         Play Again

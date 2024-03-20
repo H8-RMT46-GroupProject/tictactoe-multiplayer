@@ -21,9 +21,13 @@ export default function CreateRoom() {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    if (!playerName.trim()) {
+    let trimmedPlayerName = playerName.trim();
+    if (!trimmedPlayerName) {
       toast({ message: "Player name is required", backgroundColor: "red" });
       return;
+    }
+    if (trimmedPlayerName.length > 10) {
+      trimmedPlayerName = trimmedPlayerName.substring(0, 10);
     }
     try {
       const room = Math.floor(Math.random() * 10000);
@@ -38,7 +42,7 @@ export default function CreateRoom() {
           lose: 0,
           draw: 0,
           role: "player1",
-          name: playerName,
+          name: trimmedPlayerName,
         },
         squares: {
           10: 0,
@@ -48,12 +52,12 @@ export default function CreateRoom() {
 
     update(ref(db, "rooms"), createRoom);
     setUser({
-      name: playerName,
+      name: trimmedPlayerName,
       room: room,
     });
 
-    localStorage.setItem("user", JSON.stringify({ name: playerName, room }));
-    toast({ message: `${playerName} Room created`, backgroundColor: "green" })
+    localStorage.setItem("user", JSON.stringify({ name: trimmedPlayerName, room }));
+    toast({ message: `${trimmedPlayerName} Room created`, backgroundColor: "green" })
     navigate("/dashboard");
     } catch (error) {
       console.log(error)
