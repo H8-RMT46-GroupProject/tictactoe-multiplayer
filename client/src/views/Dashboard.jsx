@@ -93,7 +93,7 @@ export default function Dashboard() {
       gameOverSound.play();
     } else if (Object.keys(squares).length === 1) {
       setStatus("Player 1 Start");
-    } else if (calculatedraw(squares)) {
+    } else if (calculatedraw(squares) && !winner) {
       update(ref(db, `rooms/${user.room}/player2`), {
         draw: data.player1.draw + 1,
       });
@@ -200,49 +200,18 @@ export default function Dashboard() {
               </p>
             </div>
             {data && Object.keys(data).length > 0 && (
-              <div>
-                <div>
-                  <Square
-                    value={squares[0]}
-                    onSquareClick={() => handleClick(0)}
-                  />
-                  <Square
-                    value={squares[1]}
-                    onSquareClick={() => handleClick(1)}
-                  />
-                  <Square
-                    value={squares[2]}
-                    onSquareClick={() => handleClick(2)}
-                  />
-                </div>
-                <div>
-                  <Square
-                    value={squares[3]}
-                    onSquareClick={() => handleClick(3)}
-                  />
-                  <Square
-                    value={squares[4]}
-                    onSquareClick={() => handleClick(4)}
-                  />
-                  <Square
-                    value={squares[5]}
-                    onSquareClick={() => handleClick(5)}
-                  />
-                </div>
-                <div>
-                  <Square
-                    value={squares[6]}
-                    onSquareClick={() => handleClick(6)}
-                  />
-                  <Square
-                    value={squares[7]}
-                    onSquareClick={() => handleClick(7)}
-                  />
-                  <Square
-                    value={squares[8]}
-                    onSquareClick={() => handleClick(8)}
-                  />
-                </div>
+              <div className="border border-lg border-dark shadow shadow-lg">
+                {[0, 1, 2].map((row) => (
+                  <div key={row}>
+                    {[0, 1, 2].map((col) => (
+                      <Square
+                        key={col}
+                        value={squares[row * 3 + col]}
+                        onSquareClick={() => handleClick(row * 3 + col)}
+                      />
+                    ))}
+                  </div>
+                ))}
               </div>
             )}
             <div>
