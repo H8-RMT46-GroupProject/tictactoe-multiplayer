@@ -100,8 +100,7 @@ export default function CreateRoom() {
             style={{ marginLeft: "0.3rem", width: "95%" }}
             minLength={3}
             maxLength={10}
-            required
-          />{" "}
+          />
           <br />
           <br />
           <div className="d-flex justify-content-center">
