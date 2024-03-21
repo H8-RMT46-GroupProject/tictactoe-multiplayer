@@ -1,7 +1,7 @@
 import { getDatabase, ref, update } from "firebase/database";
 import { firebaseConfig } from "../helpers/firebaseConfig.js";
 import { useContext, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { UserContext } from "../contexts/UserContext";
 import toast from "../utils/toast";
@@ -83,33 +83,32 @@ export default function CreateRoom() {
           backgroundSize: "cover",
         }}
       >
-        <form onSubmit={handleCreate} style={{ textAlign: "center" }}>
-          <label
-            htmlFor="playerName"
-            className="form-label"
-            style={{ color: "white" }}
-          >
+        <form
+          onSubmit={handleCreate}
+          className="border border-warning rounded p-5 bg-dark bg-opacity-25"
+        >
+          <label htmlFor="playerName" className="form-label h5 text-warning">
             Player Name:
           </label>
           <input
             type="text"
             id="playerName"
-            className="form-control"
+            className="form-control mb-3 w-100 form-control-lg"
             value={playerName}
             onChange={handleOnChange}
-            style={{ marginLeft: "0.3rem", width: "95%" }}
             minLength={3}
             maxLength={10}
           />
-          <br />
-          <br />
-          <div className="d-flex justify-content-center">
-            <button className="btn btn-primary me-2" type="submit">
+          <div className="d-flex flex-column justify-content-center align-items-center mt-3">
+            <button className="btn btn-primary mb-3 w-100" type="submit">
               Create Room
             </button>
-            <Link to="/">
-              <button className="btn btn-danger ms-2">Cancel</button>
-            </Link>
+            <button
+              className="btn btn-danger w-100"
+              onClick={() => navigate("/")}
+            >
+              Cancel
+            </button>
           </div>
         </form>{" "}
         <br />

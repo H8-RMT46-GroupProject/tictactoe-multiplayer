@@ -206,25 +206,31 @@ export default function Dashboard() {
           }}
         >
           <div style={{ marginBottom: "10px" }}>
-            <h1>Multiplayer Tic-Tac-Toe Game</h1>
+            <h1 className="text-center text-light">
+              Multiplayer Tic-Tac-Toe Game
+            </h1>
           </div>
           <div>
-            <h4>Room: {user.room}</h4>
+            <h4>
+              <span className="text-warning">Room:</span> {user.room}
+            </h4>
           </div>
           <div className="status">
-            <h5>{status}</h5>
+            <h5 className="text-center">{status}</h5>
           </div>
           <div className="container d-flex justify-content-center align-items-center gap-5">
             <div>
-              <h5>Player 1: {player1?.name}</h5>
+              <h5>
+                <span className="text-warning">Player 1:</span> {player1?.name}
+              </h5>
               <p>
-                Win: {player1?.win} | Lose: {player1?.lose} | Draw:{" "}
-                {player1?.draw}
+                Win: {player1?.win} | Draw: {player1?.draw} | Lose:{" "}
+                {player1?.lose}
               </p>
             </div>
             {data && Object.keys(data).length > 0 && (
               <div
-                className="border border-lg border-white shadow shadow-lg"
+                className="border border-lg border-warning shadow shadow-lg shadow-dark rounded"
                 style={{ marginTop: "1.5%" }}
               >
                 {[0, 1, 2].map((row) => (
@@ -241,7 +247,9 @@ export default function Dashboard() {
               </div>
             )}
             <div>
-              <h5>Player 2: {player2.name}</h5>
+              <h5>
+                <span className="text-warning">Player 2:</span> {player2.name}
+              </h5>
               {player2.name === "Waiting..." ? (
                 <div className="spinner"></div>
               ) : (
@@ -263,8 +271,7 @@ export default function Dashboard() {
           }}
         >
           <button
-            className="btn btn-lg btn-warning mb-10"
-            style={{ padding: "5px 5px" }}
+            className="btn btn-lg btn-warning mb-10 px-3"
             onClick={handleReset}
           >
             Reset Game
