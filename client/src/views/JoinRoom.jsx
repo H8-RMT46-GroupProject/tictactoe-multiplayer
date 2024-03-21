@@ -109,7 +109,6 @@ export default function JoinRoom() {
             style={{ marginLeft: "0.5rem" }}
             minLength={3}
             maxLength={10}
-            required
           />{" "}
           <br />
           <br />
