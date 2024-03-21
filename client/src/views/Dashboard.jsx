@@ -258,7 +258,7 @@ export default function Dashboard() {
             transform: "translateX(-50%)",
           }}
         >
-          <button className="btn btn-lg btn-warning mb-4" onClick={handleReset}>
+          <button className="btn btn-lg btn-warning mb-10" style={{ padding: "5px 5px" }} onClick={handleReset}>
             Reset Game
           </button>
         </div>
