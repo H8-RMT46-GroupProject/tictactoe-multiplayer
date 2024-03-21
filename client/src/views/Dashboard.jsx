@@ -8,6 +8,7 @@ import { calculateWinner, calculatedraw } from "../helpers/helper";
 import { useNavigate } from "react-router-dom";
 import clickSoundAsset from "../sounds/click.wav";
 import gameOverSoundAsset from "../sounds/game_over.wav";
+import drawSoundAsset from "../sounds/game-over-arcade-6435.mp3";
 import "../styles/style.css";
 
 export default function Dashboard() {
@@ -43,6 +44,7 @@ export default function Dashboard() {
 
   const clickSound = new Audio(clickSoundAsset);
   const gameOverSound = new Audio(gameOverSoundAsset);
+  const drawSound = new Audio(drawSoundAsset);
 
   const handleClick = (i) => {
     if (
@@ -103,6 +105,7 @@ export default function Dashboard() {
         draw: data.player2.draw + 1,
       });
       setStatus("Draw");
+      drawSound.play();
     } else {
       const currentPlayer = xIsNext ? "Player 1 (X)" : "Player 2 (O)";
       setStatus("Next Player: " + currentPlayer);
