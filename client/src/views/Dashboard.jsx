@@ -163,8 +163,13 @@ export default function Dashboard() {
 
   if (data.isLogin === false) {
     localStorage.clear();
+    console.log("user not login", user.room);
+    update(ref(db, `rooms`), {
+      [user.room]: null,
+    });
     navigate("/");
   }
+
   return (
     <>
       <div

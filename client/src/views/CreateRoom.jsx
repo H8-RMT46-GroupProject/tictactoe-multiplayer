@@ -43,8 +43,8 @@ export default function CreateRoom() {
           squares: {
             10: 0,
           },
+          isLogin: true,
         },
-        isLogin: true,
       };
 
       update(ref(db, "rooms"), createRoom);
