@@ -3,7 +3,7 @@ import Square from "../components/Square";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../helpers/firebaseConfig.js";
 import { getDatabase, onValue, ref, update } from "firebase/database";
-import { UserContext } from "../contexts/UserContext.js";
+import { UserContext } from "../contexts/UserContext";
 import { calculateWinner, calculatedraw } from "../helpers/helper";
 import { useNavigate } from "react-router-dom";
 import clickSoundAsset from "../sounds/click.wav";
