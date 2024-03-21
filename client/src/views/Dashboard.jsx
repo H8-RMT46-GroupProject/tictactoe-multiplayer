@@ -50,7 +50,8 @@ export default function Dashboard() {
       squares[i] ||
       calculateWinner(squares) ||
       (user.turn === "X" && !xIsNext) ||
-      (user.turn === "O" && xIsNext)
+      (user.turn === "O" && xIsNext) ||
+      !data.player2
     ) {
       return;
     }
@@ -158,12 +159,14 @@ export default function Dashboard() {
     update(ref(db, `rooms/${user.room}`), {
       isLogin: false,
     });
+    update(ref(db, `rooms`), {
+      [user.room]: null,
+    });
     navigate("/");
   };
 
   if (data.isLogin === false) {
     localStorage.clear();
-    console.log("user not login", user.room);
     update(ref(db, `rooms`), {
       [user.room]: null,
     });
@@ -243,7 +246,8 @@ export default function Dashboard() {
                 <div className="spinner"></div>
               ) : (
                 <p>
-                  Win: {player2.win} | Lose: {player2.lose} | Draw: {player2.draw}
+                  Win: {player2.win} | Lose: {player2.lose} | Draw:{" "}
+                  {player2.draw}
                 </p>
               )}
             </div>
@@ -258,7 +262,11 @@ export default function Dashboard() {
             transform: "translateX(-50%)",
           }}
         >
-          <button className="btn btn-lg btn-warning mb-10" style={{ padding: "5px 5px" }} onClick={handleReset}>
+          <button
+            className="btn btn-lg btn-warning mb-10"
+            style={{ padding: "5px 5px" }}
+            onClick={handleReset}
+          >
             Reset Game
           </button>
         </div> 
