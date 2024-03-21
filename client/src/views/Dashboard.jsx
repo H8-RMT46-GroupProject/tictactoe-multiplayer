@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import clickSoundAsset from "../sounds/click.wav";
 import gameOverSoundAsset from "../sounds/game_over.wav";
 import "../styles/style.css";
-import Image from "../images/rm218-bb-07.jpg";
 
 export default function Dashboard() {
   const [xIsNext, setXIsNext] = useState(true);
@@ -179,8 +178,7 @@ export default function Dashboard() {
         style={{
           position: "relative",
           height: "100vh",
-          backgroundImage: `url(${Image})`,
-          backgroundSize: "cover",
+          background: `linear-gradient(135deg, #002446, #001E3F, #031135, #321336, #02162E)`,
           color: "white",
         }}
       >
