@@ -269,7 +269,7 @@ export default function Dashboard() {
           >
             Reset Game
           </button>
-        </div>
+        </div> 
       </div>
     </>
   );
